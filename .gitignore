@@ -1,0 +1,6 @@
+# Xcode関連
+*.xcuserdatad
+*.xcscmblueprint
+xcuserdata/
+DerivedData/
+*.swp
