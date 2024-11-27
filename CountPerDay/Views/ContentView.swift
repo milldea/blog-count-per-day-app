@@ -106,7 +106,6 @@ struct ContentView: View {
     }
 
     private func incrementCount(for day: String) {
-        guard let dayInt = Int(day) else { return }
         let key = CalendarUtils.keyFor(day: day, currentDate: currentDate)
         dailyCounts[key, default: 0] += 1
         saveDailyCounts()
