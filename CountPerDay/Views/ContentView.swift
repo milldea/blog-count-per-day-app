@@ -51,14 +51,14 @@ struct ContentView: View {
         HStack {
             Button(action: showPreviousMonth) {
                 Text("< 前月")
-                    .modifier(ButtonStyleModifier())  // .modifier を使ってカスタムスタイルを適用
+                    .modifier(ButtonStyleModifier())
             }
 
             Spacer()
 
             Button(action: showNextMonth) {
                 Text("次月 >")
-                    .modifier(ButtonStyleModifier())  // 同様に適用
+                    .modifier(ButtonStyleModifier())
             }
         }
         .padding(0.1)
