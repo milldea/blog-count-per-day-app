@@ -6,7 +6,8 @@ struct ContentView: View {
     
     @AppStorage("dailyCounts") private var dailyCountsData: Data?
     @State private var dailyCounts: [String: Int] = [:]
-    
+    @State private var isGraphViewPresented = false
+
     private var yearForCurrentDate: String {
         String(calendar.component(.year, from: currentDate))
     }
@@ -39,6 +40,18 @@ struct ContentView: View {
         .padding()
         .onAppear {
             loadDailyCounts()
+        }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.height < -100 { // 上方向のスワイプを検出
+                        isGraphViewPresented = true
+                    }
+                }
+        )
+        .sheet(isPresented: $isGraphViewPresented) {
+            GraphView(monthlyCounts: monthlyCounts())
+            .presentationDetents([.fraction(0.5)])
         }
     }
     
@@ -98,13 +111,48 @@ struct ContentView: View {
         }
     }
 
+    private func monthlyCounts() -> [String: Int] {
+        let year = calendar.component(.year, from: currentDate)
+        let month = calendar.component(.month, from: currentDate)
+        let range = calendar.range(of: .day, in: .month, for: currentDate) ?? 1..<31
+
+        var completeCounts: [String: Int] = [:]
+        for day in range {
+            // 日付のキーを yyyy-MM-dd 形式で作成
+            let key = String(format: "%04d-%02d-%02d", year, month, day)
+            // dailyCounts にその日のデータがあれば取得、なければ 0
+            completeCounts[key] = dailyCounts[key] ?? 0
+        }
+        
+        // 日付順にソート
+        let sortedCounts = completeCounts.keys.sorted { (date1, date2) -> Bool in
+            guard let dateObject1 = dateFormatter.date(from: date1), let dateObject2 = dateFormatter.date(from: date2) else {
+                return false
+            }
+            return dateObject1 < dateObject2
+        }
+        for day in range {
+            let key = String(format: "%04d-%02d-%02d", year, month, day)
+            completeCounts[key] = dailyCounts[key] ?? 0
+        }
+        
+        return sortedCounts.reduce(into: [String: Int]()) { result, key in
+            result[key] = completeCounts[key]
+        }
+    }
+
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }
+
     private func resetCount(for day: String) {
         let key = CalendarUtils.keyFor(day: day, currentDate: currentDate)
         dailyCounts[key] = nil
         saveDailyCounts()
     }
 
-    
     private func loadDailyCounts() {
         dailyCounts = DataManager.loadDailyCounts(from: dailyCountsData)
     }
