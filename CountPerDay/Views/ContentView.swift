@@ -90,12 +90,20 @@ struct ContentView: View {
                         day: day,
                         isToday: CalendarUtils.isToday(day, currentDate: currentDate),
                         count: dailyCounts[CalendarUtils.keyFor(day: day, currentDate: currentDate)],
-                        onTap: { incrementCount(for: day) }
+                        onTap: { incrementCount(for: day) },
+                        onLongPress: { resetCount(for: day) }
                     )
                 }
             }
         }
     }
+
+    private func resetCount(for day: String) {
+        let key = CalendarUtils.keyFor(day: day, currentDate: currentDate)
+        dailyCounts[key] = nil
+        saveDailyCounts()
+    }
+
     
     private func loadDailyCounts() {
         dailyCounts = DataManager.loadDailyCounts(from: dailyCountsData)

@@ -5,6 +5,7 @@ struct DateCellView: View {
     let isToday: Bool
     let count: Int?
     let onTap: () -> Void
+    let onLongPress: () -> Void
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -12,7 +13,12 @@ struct DateCellView: View {
                 .fill(isToday ? Color.blue : Color.gray.opacity(0.2))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .cornerRadius(8)
-                .onTapGesture { onTap() }
+                .onTapGesture {
+                    onTap()
+                }
+                .onLongPressGesture {
+                    onLongPress()
+                }
 
             Text(day)
                 .padding(5)
