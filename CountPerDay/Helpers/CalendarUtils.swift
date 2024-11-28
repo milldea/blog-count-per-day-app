@@ -25,6 +25,7 @@ struct CalendarUtils {
         let calendar = Calendar.current
         let year = calendar.component(.year, from: currentDate)
         let month = calendar.component(.month, from: currentDate)
-        return "\(year)-\(month)-\(dayInt)"
+        // 日付のキーを yyyy-MM-dd 形式で作成（ゼロ埋め）
+            return String(format: "%04d-%02d-%02d", year, month, day)
     }
 }
