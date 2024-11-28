@@ -21,7 +21,6 @@ struct CalendarUtils {
 
     // 日付に基づくキーを生成
     static func keyFor(day: String, currentDate: Date) -> String {
-        guard let dayInt = Int(day) else { return "" }
         let calendar = Calendar.current
         let year = calendar.component(.year, from: currentDate)
         let month = calendar.component(.month, from: currentDate)
